@@ -9,6 +9,8 @@ import { IoChevronBack, IoChevronForwardOutline } from "react-icons/io5";
 import { TbView360 } from "react-icons/tb";
 import { FaComment, FaTrash } from "react-icons/fa6";
 import axios from "axios";
+import { FaSearch } from "react-icons/fa";
+import { cat } from "../../components";
 
 
 const MyArticles = () => {
@@ -51,11 +53,25 @@ const MyArticles = () => {
     return (
         <main className='w-full h-[100dvh]'>
             <Navbar />
+            <div className='flex xl:flex-row lg:flex-row sm:flex-col flex-col'>
+                <div className='lg:w-[75%] xl:w-[75%] w-[95%] border-2 border-black mx-5 my-2 mt-10 h-10 flex justify-between px-10'>
+                    <input type="text" placeholder='Search the article...' className='outline-none h-full' />
+                    <button><FaSearch /></button>
+                </div>
+                <select name="category" id="cat" className='h-10 lg:mt-10 w-[20%] text-center border-2 border-black mx-5 lg:mx-0 xl:mx-0'>
+                    {
+                        cat.map((c) => (
+                            <option value={c}>{c}</option>
+                        ))
+                    }
+                </select>
+            </div>
             <div className='w-full h-max flex justify-end'>
                 <button className='bg-blue-800 px-5 py-2 m-5 text-lg text-white font-semibold rounded-md'
                     onClick={() => nav('/admin/create')} >+ Add new</button>
             </div>
-            <section className='place-content-center place-items-center grid grid-cols-3 p-10 gap-6'>
+            <section className='w-full place-content-center place-items-center grid gap-6 p-10
+       lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 grid-cols-1'>
 
                 {articalesLoading ? (
                     <>

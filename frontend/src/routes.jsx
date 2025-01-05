@@ -11,72 +11,54 @@ import Comments from "./pages/comments";
 import Profile from "./pages/profile";
 import MyFavorites from "./pages/myFavorites";
 import NotFound from "./pages/not-found";
-import { AdminRoute, ProtectedRoute } from "./components/ProtectedRoutes";
-// import { ProtectedRoute, AdminRoute } from "./components/ProtectedRoute"; // Import ProtectedRoute and AdminRoute
-
-const AdminLayout = ({ children }) => (
-    <div>
-        {/* Admin UI like sidebar or header */}
-        {children}
-    </div>
-);
 
 export const appRouter = createBrowserRouter([
     {
         path: "/",
-        element: <ProtectedRoute><Signup /></ProtectedRoute>,
+        element: <Signup />,
     },
     {
         path: "/login",
-        element: <ProtectedRoute><Login /></ProtectedRoute>,
+        element: <Login />,
     },
     {
         path: "/articles",
         element: <Articles />,
     },
     {
+        path: "/admin/comments",
+        element: <AdminComments />,
+    },
+    {
         path: "/article/comments",
         element: <Comments />,
     },
     {
+        path: "/admin/create",
+        element: <CreateArticle />,
+    },
+    {
         path: "/profile",
-        element: <ProtectedRoute><Profile /></ProtectedRoute>,
+        element: <Profile />,
     },
     {
         path: "/favorites",
-        element: <ProtectedRoute><MyFavorites /></ProtectedRoute>,
+        element: <MyFavorites />,
     },
     {
         path: "/view",
-        element: <ProtectedRoute><ViewArticle /></ProtectedRoute>,
+        element: <ViewArticle />,
     },
     {
-        path: "/admin",
-        element: <AdminRoute><AdminLayout /></AdminRoute>, // Admin layout with nested admin routes
-        children: [
-            {
-                path: "create",
-                element: <CreateArticle />,
-            },
-            {
-                path: "update",
-                element: <UpdateArticle />,
-            },
-            {
-                path: "article",
-                element: <MyArticles />,
-            },
-            {
-                path: "comments",
-                element: <AdminComments />,
-            },
-        ],
+        path: "/admin/update",
+        element: <UpdateArticle />,
     },
     {
-        path: "*",
-        element: <NotFound />,
+        path: "/admin/article",
+        element: <MyArticles />,
+    },
+    {
+        path: "*", 
+        element: <NotFound />, 
     },
 ]);
-
-// AdminLayout can be a wrapper component for admin routes, to include common admin UI
-

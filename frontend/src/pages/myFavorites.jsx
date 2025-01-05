@@ -34,7 +34,7 @@ const MyFavorites = () => {
         <main className='w-full'>
             <Navbar />
             <section className='w-full place-content-center place-items-center grid gap-6 p-10
-       lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 grid-cols-1'>
+       lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 grid-cols-1'>
 
                 {
                     articles.length > 0 ? (

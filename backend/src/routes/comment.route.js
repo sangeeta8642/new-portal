@@ -1,12 +1,5 @@
 import e from "express";
 import isAuthenticate from "../middlewares/isAuthenticate.js";
-import { singleUpload } from "../middlewares/singleUpload.js";
-import {
-  getArticle,
-  createArticle,
-  getAllArticles,
-  getArticlesOfAdmin,
-} from "../controllers/article.controller.js";
 import {
   updateCommentStatus,
   createComment,

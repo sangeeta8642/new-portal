@@ -7,7 +7,7 @@ export const ProtectedRoute = ({ children }) => {
     // const { user } = useAuth(); // Assuming useAuth hook provides user info
 
     if (!user) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/" />;
     }
 
     return children;

@@ -14,65 +14,19 @@ export const no_user = [
   { title: "login", path: "/login" },
 ];
 
-export const comments = [
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  {
-    name: "user1",
-    comment: "nice news",
-    pic: "https://cdn-icons-png.flaticon.com/128/9131/9131646.png",
-  },
-  ];
+export const cat = [
+  "Politics",
+  "Business",
+  "Economy",
+  "Technology",
+  "Science",
+  "Health",
+  "Sports",
+  "Entertainment",
+  "Lifestyle",
+  "Education",
+  "Environment",
+  "Travel",
+  "Food",
+  "Culture",
+];

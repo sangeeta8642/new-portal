@@ -5,8 +5,10 @@ import Navbar from '../components/navbar';
 import { useNavigate } from 'react-router-dom';
 import { TbView360 } from "react-icons/tb";
 import { IoIosHeart } from "react-icons/io";
-import { FaComment } from 'react-icons/fa6';
+import { FaComment, FaSearchengin } from 'react-icons/fa6';
 import axios from 'axios';
+import { FaSearch } from "react-icons/fa";
+import { cat } from '../components';
 
 const Articles = () => {
   const { articles } = useGetAllArticles()
@@ -32,8 +34,21 @@ const Articles = () => {
   return (
     <main className='w-full'>
       <Navbar />
+      <div className='flex xl:flex-row lg:flex-row sm:flex-col flex-col'>
+        <div className='lg:w-[75%] xl:w-[75%] w-[95%] border-2 border-black mx-5 my-2 mt-10 h-10 flex justify-between px-10'>
+          <input type="text" placeholder='Search the article...' className='outline-none h-full' />
+          <button><FaSearch /></button>
+        </div>
+        <select name="category" id="cat" className='h-10 lg:mt-10 w-[20%] text-center border-2 border-black mx-5 lg:mx-0 xl:mx-0'>
+          {
+            cat.map((c) => (
+              <option value={c}>{c}</option>
+            ))
+          }
+        </select>
+      </div>
       <section className='w-full place-content-center place-items-center grid gap-6 p-10
-       lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 grid-cols-1'>
+       lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-1 sm:grid-cols-1 grid-cols-1'>
 
         {
           articles.length > 0 ? (

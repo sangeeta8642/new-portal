@@ -67,18 +67,15 @@ export const updateComment = async (req, res) => {
   try {
     const { commentId, content } = req.body;
 
-    // Validate input data
-    if (!commentId || !content) {
+     if (!commentId || !content) {
       return sendResponse(res, 400, "Please provide complete data");
     }
 
-    // Check if the comment exists
     const comment = await Comment.findById(commentId);
     if (!comment) {
       return sendResponse(res, 404, "Comment not found");
     }
 
-    // Update the content
     comment.content = content;
     await comment.save();
 
@@ -98,18 +95,15 @@ export const updateCommentStatus = async (req, res) => {
   try {
     const { commentId, status } = req.body;
 
-    // Validate input data
     if (!commentId || !status) {
       return sendResponse(res, 400, "Please provide complete data");
     }
 
-    // Check if the comment exists
     const comment = await Comment.findById(commentId);
     if (!comment) {
       return sendResponse(res, 404, "Comment not found");
     }
 
-    // Update the content
     comment.status = status;
     await comment.save();
 

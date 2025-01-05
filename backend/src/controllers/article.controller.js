@@ -157,12 +157,11 @@ export const getAllArticles = async (req, res) => {
     const limit = parseInt(req.query.limit) || 3;
     const skip = (page - 1) * limit;
 
-    const { query = "", categories } = req.query; // Default query to an empty string
+    const { query = "", categories } = req.query; 
 
     let searchCondition = { $or: [] };
 
     if (query.trim()) {
-      // Ensure query is non-empty and trimmed
       const categorieSearch = await Article.find({
         categories: { $regex: query, $options: "i" },
       }).select("_id");
@@ -182,18 +181,15 @@ export const getAllArticles = async (req, res) => {
 
     console.log("Total Doc totalDocs 2 - " + totalDocs);
 
-    // Fetch the paginated data
     const Articals = await Article.find(
       searchCondition.$or.length ? searchCondition : {}
     )
       .sort({ _id: -1 })
-      // .populate("User", "name role")
       .skip(skip)
       .limit(limit)
       .exec();
 
-    // Calculate total pages
-    const totalPages = Math.ceil(totalDocs / limit);
+     const totalPages = Math.ceil(totalDocs / limit);
 
     return res.status(200).json({
       success: true,
@@ -219,23 +215,19 @@ export const deleteArticle = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate input
     if (!id) {
       return sendResponse(res, 400, "Please provide the Id");
     }
 
-    // Check if the article exists
     const article = await Article.findById(id);
 
     if (!article) {
       return sendResponse(res, 404, "No article found");
     }
 
-    // Extract the Cloudinary public ID from the article's image URL
     const imagePublicId = article.image?.split("/").pop().split(".")[0];
 
     if (imagePublicId) {
-      // Delete the image from Cloudinary
       await cloudinary.v2.uploader.destroy(imagePublicId, (error, result) => {
         if (error) {
           console.error("Cloudinary image deletion error:", error);
@@ -248,8 +240,7 @@ export const deleteArticle = async (req, res) => {
       });
     }
 
-    // Delete the article
-    await article.deleteOne();
+     await article.deleteOne();
 
     return sendResponse(
       res,
