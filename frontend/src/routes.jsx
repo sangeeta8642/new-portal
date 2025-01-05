@@ -4,6 +4,8 @@ import Login from "./pages/auth/login";
 import Articles from "./pages/articles";
 import CreateArticle from "./pages/admin/createArticle";
 import MyArticles from "./pages/admin/myArticles";
+import UpdateArticle from "./pages/admin/updateArticle";
+import ViewArticle from "./pages/admin/viewArticle";
 
 export const appRouter = createBrowserRouter([
     {
@@ -21,6 +23,14 @@ export const appRouter = createBrowserRouter([
     {
         path: "/admin/create/",
         element: <CreateArticle />,
+    },
+    {
+        path: "/admin/view/",
+        element: <ViewArticle />,
+    },
+    {
+        path: "/admin/update/",
+        element: <UpdateArticle />,
     },
     {
         path: "/admin/article",

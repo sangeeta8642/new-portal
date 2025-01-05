@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 const CreateArticles = () => {
   const user = JSON.parse(localStorage.getItem("auth"))
@@ -11,6 +12,7 @@ const CreateArticles = () => {
     tags: "",
     admin: user._id,
     file: null,
+    content: ""
   });
 
   const handleChange = (e) => {
@@ -54,6 +56,7 @@ const CreateArticles = () => {
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg mt-10">
+      <button onClick={() => nav('/admin/article')}><FaArrowLeftLong /></button>
       <h2 className="text-2xl font-bold mb-6 text-center">Create Article</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
@@ -67,6 +70,17 @@ const CreateArticles = () => {
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-1">Content :</label>
+          <textarea
+            type="text"
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          ></textarea>
+        </div>
+
 
         {/* Email */}
         <div>
@@ -118,3 +132,14 @@ const CreateArticles = () => {
 };
 
 export default CreateArticles;
+
+// import React from 'react'
+// import ArticleEditor from '../../components/articleEditor'
+
+// const CreateArticle = () => {
+//   return (
+//     <ArticleEditor />
+//   )
+// }
+
+// export default CreateArticle

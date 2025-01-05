@@ -8,9 +8,9 @@ export const createArticle = async (req, res) => {
   console.log(req.body);
 
   try {
-    const { title, admin, categories, tags } = req.body;
+    const { title, admin, categories, tags, content } = req.body;
 
-    if (!title || !admin || !categories || !tags) {
+    if (!title || !admin || !categories || !tags || !content) {
       return sendResponse(res, 400, "please provide the complete data");
     }
 
@@ -36,6 +36,7 @@ export const createArticle = async (req, res) => {
       tags: tagArr,
       banner: cloudRes.secure_url,
       admin,
+      content,
     });
 
     await article.save();
@@ -45,39 +46,57 @@ export const createArticle = async (req, res) => {
   }
 };
 export const updateArticle = async (req, res) => {
-  try {
-    const { title, admin, categories, tags } = req.body;
+  console.log(req.body);
 
-    if (!title || !admin || !categories || !tags) {
-      return sendResponse(res, 400, "please provide the complete data");
+  try {
+    const { articleId, title, admin, categories, tags, content } = req.body;
+
+    if (!articleId) {
+      return sendResponse(res, 400, "Article ID is required");
     }
 
-    const isAdminExists = await User.findByIdAndUpdate(admin);
-    if (!isAdminExists) {
-      return sendResponse(res, 400, "No user found");
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return sendResponse(res, 404, "Article not found");
+    }
+
+    if (admin) {
+      const isAdminExists = await User.findById(admin);
+      if (!isAdminExists) {
+        return sendResponse(res, 400, "No user found");
+      }
     }
 
     const file = req.file;
-    if (!file) {
-      return sendResponse(res, 400, "Please provide the profile pic");
+    if (file) {
+      // Extract the public_id from the existing image URL
+      const publicId = article.banner.split("/").slice(-1)[0].split(".")[0];
+
+      // Delete the old image from Cloudinary
+      await cloudinary.uploader.destroy(publicId);
+
+      // Upload the new image
+      const fileUri = getDataUri(file);
+      const cloudRes = await cloudinary.uploader.upload(fileUri.content);
+
+      // Update the article's banner with the new image URL
+      article.banner = cloudRes.secure_url;
     }
 
-    const fileUri = getDataUri(file);
-    const cloudRes = await cloudinary.uploader.upload(fileUri.content);
-
-    const catArr = categories.split(",");
-    const tagArr = tags.split(",");
-
-    let article = await Article.create({
-      title,
-      categories: catArr,
-      tags: tagArr,
-      banner: cloudRes.secure_url,
-      admin,
-    });
+    if (title) article.title = title;
+    if (categories) article.categories = categories.split(",");
+    if (tags) article.tags = tags.split(",");
+    if (content) article.content = content;
 
     await article.save();
-    return sendResponse(res, 201, "article added successfully", true, article);
+
+    return sendResponse(
+      res,
+      200,
+      "Article updated successfully",
+      true,
+      article
+    );
   } catch (error) {
     return sendResponse(res, 500, error.message);
   }

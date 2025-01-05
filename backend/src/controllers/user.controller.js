@@ -63,7 +63,7 @@ export const loginUser = async (req, res) => {
     const UserData = await User.findOne({ email }).select("-password");
 
     const token = jwt.sign({ UserId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
 
     const Options = {
