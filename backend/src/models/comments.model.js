@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const articleSchema = mongoose.Schema(
+const commentSchema = mongoose.Schema(
   {
     article: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,3 +25,5 @@ const articleSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+export const Comment = mongoose.model("Comment", commentSchema);

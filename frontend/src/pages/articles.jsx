@@ -1,12 +1,16 @@
 import React from 'react'
 import { useGetAllArticles } from '../hooks/articles';
-import  ArticleCard  from '../components/articlecard';
+import ArticleCard from '../components/articlecard';
 import Navbar from '../components/navbar';
+import { useNavigate } from 'react-router-dom';
+import { TbView360 } from "react-icons/tb";
+import { IoIosHeart } from "react-icons/io";
+import { FaComment } from 'react-icons/fa6';
 
 const Articles = () => {
   const { articles } = useGetAllArticles()
+  const nav = useNavigate()
 
-  console.log("articles", articles);
 
   return (
     <main className='w-full'>
@@ -17,7 +21,25 @@ const Articles = () => {
         {
           articles.length > 0 ? (
             articles.map((art) => (
-              <ArticleCard article={art} />
+              <div className='flex flex-col gap-2'>
+                <ArticleCard article={art} />
+                <div className='w-full flex gap-2 justify-end px-4'>
+                  <button onClick={() => nav('/admin/update',
+                    { state: { art } })}>
+                    <abbr title="Add to favorites">
+                      <IoIosHeart className='size-6' />
+                    </abbr>
+                  </button>
+                  <button onClick={() => nav('/view',
+                    { state: { art } })}> <abbr title="View">
+                      <TbView360 className='size-6' />
+                    </abbr></button>
+                  <button onClick={() => nav('/article/comments',
+                    { state: { art } })}> <abbr title="see comments">
+                      <FaComment className='size-6' />
+                    </abbr> </button>
+                </div>
+              </div>
             ))
           ) : <h2>You have no articles</h2>
         }

@@ -6,6 +6,9 @@ import CreateArticle from "./pages/admin/createArticle";
 import MyArticles from "./pages/admin/myArticles";
 import UpdateArticle from "./pages/admin/updateArticle";
 import ViewArticle from "./pages/admin/viewArticle";
+import AdminComments from "./pages/admin/comments";
+import Comments from "./pages/comments";
+import Profile from "./pages/profile";
 
 export const appRouter = createBrowserRouter([
     {
@@ -21,15 +24,27 @@ export const appRouter = createBrowserRouter([
         element: <Articles />,
     },
     {
-        path: "/admin/create/",
+        path: "/admin/comments",
+        element: <AdminComments />,
+    },
+    {
+        path: "/article/comments",
+        element: <Comments />,
+    },
+    {
+        path: "/admin/create",
         element: <CreateArticle />,
     },
     {
-        path: "/admin/view/",
+        path: "/profile",
+        element: <Profile />,
+    },
+    {
+        path: "/view",
         element: <ViewArticle />,
     },
     {
-        path: "/admin/update/",
+        path: "/admin/update",
         element: <UpdateArticle />,
     },
     {

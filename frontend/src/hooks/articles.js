@@ -13,9 +13,9 @@ export const useGetAllArticles = () => {
           `${import.meta.env.VITE_BACKEND_URL}/article`,
           { withCredentials: true }
         );
-        console.log("response", response.data.data);
+        console.log("response", response.data.data.Articals);
 
-        setArticles(response.data.data);
+        setArticles(response.data.data.Articals);
         setLoading(false);
       } catch (error) {
         setError(error);

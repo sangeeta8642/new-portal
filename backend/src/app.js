@@ -4,6 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import UserRoute from "./routes/user.route.js";
 import ArticleRoute from "./routes/article.route.js";
+import CommentRoute from "./routes/comment.route.js";
+import { sendResponse } from "./utils/apiResponse.js";
 
 const app = e();
 
@@ -26,6 +28,7 @@ app.get("/", (_, res) => {
 
 app.use("/api/v1/user", UserRoute);
 app.use("/api/v1/article", ArticleRoute);
+app.use("/api/v1/comment", CommentRoute);
 
 app.post("/api/v1/logout", async (_, res) => {
   try {

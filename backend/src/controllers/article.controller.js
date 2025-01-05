@@ -5,8 +5,6 @@ import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 
 export const createArticle = async (req, res) => {
-  console.log(req.body);
-
   try {
     const { title, admin, categories, tags, content } = req.body;
 
@@ -46,8 +44,6 @@ export const createArticle = async (req, res) => {
   }
 };
 export const updateArticle = async (req, res) => {
-  console.log(req.body);
-
   try {
     const { articleId, title, admin, categories, tags, content } = req.body;
 
@@ -69,17 +65,13 @@ export const updateArticle = async (req, res) => {
 
     const file = req.file;
     if (file) {
-      // Extract the public_id from the existing image URL
       const publicId = article.banner.split("/").slice(-1)[0].split(".")[0];
 
-      // Delete the old image from Cloudinary
       await cloudinary.uploader.destroy(publicId);
 
-      // Upload the new image
       const fileUri = getDataUri(file);
       const cloudRes = await cloudinary.uploader.upload(fileUri.content);
 
-      // Update the article's banner with the new image URL
       article.banner = cloudRes.secure_url;
     }
 
@@ -145,15 +137,128 @@ export const getArticle = async (req, res) => {
     return sendResponse(res, 500, error.message);
   }
 };
+
+// export const getAllArticles = async (req, res) => {
+//   try {
+//     const articles = await Article.find();
+
+//     if (!articles) {
+//       return sendResponse(res, 404, "No articles found");
+//     }
+//     return sendResponse(res, 200, "", true, articles);
+//   } catch (error) {
+//     return sendResponse(res, 500, error.message);
+//   }
+// };
+
 export const getAllArticles = async (req, res) => {
   try {
-    const articles = await Article.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 2;
+    const skip = (page - 1) * limit;
 
-    if (!articles) {
-      return sendResponse(res, 404, "No articles found");
+    const { query = "", categories } = req.query; // Default query to an empty string
+
+    let searchCondition = { $or: [] };
+
+    if (query.trim()) {
+      // Ensure query is non-empty and trimmed
+      const categorieSearch = await Article.find({
+        categories: { $regex: query, $options: "i" },
+      }).select("_id");
+
+      const ArticalIds = categorieSearch.map((artical) => artical._id);
+
+      if (ArticalIds.length > 0) {
+        searchCondition.$or.push({ categories: { $in: ArticalIds } });
+      }
     }
-    return sendResponse(res, 200, "", true, articles);
+
+    console.log("search Query ", query);
+
+    const totalDocs = await Article.countDocuments(
+      searchCondition.$or.length ? searchCondition : {}
+    );
+
+    console.log("Total Doc totalDocs 2 - " + totalDocs);
+
+    // Fetch the paginated data
+    const Articals = await Article.find(
+      searchCondition.$or.length ? searchCondition : {}
+    )
+      .sort({ _id: -1 })
+      // .populate("User", "name role")
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    return res.status(200).json({
+      success: true,
+      message: "Fetched paginated data successfully",
+      data: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalDocs: totalDocs,
+        limit: limit,
+        Articals: Articals,
+        searchCondition: searchCondition,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+      error: true,
+    });
+  }
+};
+
+export const deleteArticle = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // Validate input
+    if (!id) {
+      return sendResponse(res, 400, "Please provide the Id");
+    }
+
+    // Check if the article exists
+    const article = await Article.findById(id);
+
+    if (!article) {
+      return sendResponse(res, 404, "No article found");
+    }
+
+    // Extract the Cloudinary public ID from the article's image URL
+    const imagePublicId = article.image?.split("/").pop().split(".")[0];
+
+    if (imagePublicId) {
+      // Delete the image from Cloudinary
+      await cloudinary.v2.uploader.destroy(imagePublicId, (error, result) => {
+        if (error) {
+          console.error("Cloudinary image deletion error:", error);
+          return sendResponse(
+            res,
+            500,
+            "Failed to delete the image from Cloudinary"
+          );
+        }
+      });
+    }
+
+    // Delete the article
+    await article.deleteOne();
+
+    return sendResponse(
+      res,
+      200,
+      "Article and its image deleted successfully",
+      true
+    );
   } catch (error) {
     return sendResponse(res, 500, error.message);
   }
 };
+

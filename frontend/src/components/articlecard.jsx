@@ -87,8 +87,10 @@ const ArticleCard = ({ article }) => {
                 <h2 className="font-bold text-xl mb-2 text-white text-center capitalize">
                     {article.title}
                 </h2>
-                <p className="text-gray-300 text-center mb-2 font-semibold">
-                    {getTruncatedDescription(article.content, 50)}
+                <p className="text-gray-300 text-center mb-2 font-semibold" dangerouslySetInnerHTML={{
+                    __html: getTruncatedDescription(article.content, 50),
+                }}>
+                    {/* {getTruncatedDescription(article.content, 50)} */}
                 </p>
                 <div className="text-gray-200 text-sm text-center mb-4 flex gap-2">
                     Tags: {article.tags.map((tag) => (
@@ -145,14 +147,18 @@ const ArticleCard = ({ article }) => {
                 <h2 className="font-bold text-xl mb-2 text-black text-center">
                     {article.title}
                 </h2>
-                <p className="text-gray-700 text-center mb-2 font-semibold">
-                    {getTruncatedDescription(article.description, 50)}
+                <p className="text-gray-800 text-center mb-2 font-semibold" dangerouslySetInnerHTML={{
+                    __html: getTruncatedDescription(article.content, 50),
+                }}>
+                    {/* {getTruncatedDescription(article.content, 50)} */}
                 </p>
-                <p className="text-gray-700 text-sm text-center mb-4">
-                    Source: {article.source_name}
-                </p>
+                <div className="text-gray-800 text-sm justify-center flex-wrap text-center mb-4 flex gap-2">
+                    Tags: {article.tags.map((tag) => (
+                        <p>#{tag}</p>
+                    ))}
+                </div>
                 <p className="text-black text-md font-semibold mb-4">
-                    Published on: {formattedDate}
+                    Published on: {new Date(article.createdAt).toLocaleString("en-US").split(',')[0]}
                 </p>
                 <div className="flex gap-20 w-full justify-evenly">
                     {/* <a

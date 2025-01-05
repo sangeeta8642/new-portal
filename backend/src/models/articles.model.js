@@ -17,6 +17,10 @@ const articleSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    draft: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
