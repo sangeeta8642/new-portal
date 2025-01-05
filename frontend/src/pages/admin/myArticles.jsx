@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useArticlesOfAdmin } from "../../hooks/admin";
 import ArticleCard from "../../components/articlecard";
 import { useNavigate } from "react-router-dom";
@@ -40,14 +40,31 @@ const MyArticles = () => {
     }
 
     useEffect(() => {
-        FetcharticalesByPagination(1, 10, "");
+        FetcharticalesByPagination(1, 10, "", "");
+        console.log("articalesListData",articalesListData)
     }, []);
 
     useEffect(() => {
-        FetcharticalesByPagination(articalesCurrentPage, articalesLimit, "");
+        FetcharticalesByPagination(articalesCurrentPage, articalesLimit, "", "");
     }, [articalesCurrentPage - 1 || articalesCurrentPage + 1]);
 
     const nav = useNavigate();
+
+
+
+    const [QuerySeachData, SetQuerySeachData] = useState("");
+
+    const HandleSearchQuery = (e) => {
+        const searchValue = e.target.value;
+        SetQuerySeachData(searchValue); // Update the search query state
+        FetcharticalesByPagination(1, articalesLimit, QuerySeachData, "");
+    };
+
+    const HandleSearchQuery2 = (event) => {
+        const selectedValue = event.target.value;
+        console.log(`Selected category: ${selectedValue}`);
+        FetcharticalesByPagination(1, articalesLimit, QuerySeachData, selectedValue);
+    };
 
 
     return (
@@ -55,10 +72,10 @@ const MyArticles = () => {
             <Navbar />
             <div className='flex xl:flex-row lg:flex-row sm:flex-col flex-col'>
                 <div className='lg:w-[75%] xl:w-[75%] w-[95%] border-2 border-black mx-5 my-2 mt-10 h-10 flex justify-between px-10'>
-                    <input type="text" placeholder='Search the article...' className='outline-none h-full' />
-                    <button><FaSearch /></button>
+                    <input onChange={HandleSearchQuery} name='QuerySeachData' type="text" placeholder='Search the article...' className='outline-none h-full' />
+                    {/* <button><FaSearch /></button> */}
                 </div>
-                <select name="category" id="cat" className='h-10 lg:mt-10 w-[20%] text-center border-2 border-black mx-5 lg:mx-0 xl:mx-0'>
+                <select onChange={HandleSearchQuery2} name="category" id="cat" className='h-10 lg:mt-10 w-[20%] text-center border-2 border-black mx-5 lg:mx-0 xl:mx-0'>
                     {
                         cat.map((c) => (
                             <option value={c}>{c}</option>
@@ -123,13 +140,13 @@ const MyArticles = () => {
                     <li>
                         <button
                             onClick={() => handlePageChange(articalesCurrentPage - 1)}
-                            className="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            className="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                             <IoChevronBack />
                         </button>
                     </li>
                     <li>
-                        <div className="flex items-center justify-center py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <div className="flex items-center justify-center py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
                             {articalesCurrentPage + "-" + articalesTotalPages}
                         </div>
                     </li>
@@ -137,7 +154,7 @@ const MyArticles = () => {
                     <li>
                         <button
                             onClick={() => handlePageChange(articalesCurrentPage + 1)}
-                            className="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                            className="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-50 dark:border-gray-700  dark:hover:bg-gray-700 dark:hover:text-white"
                         >
                             <IoChevronForwardOutline />
                         </button>

@@ -108,9 +108,38 @@ export const getArticlesOfAdmin = async (req, res) => {
       return sendResponse(res, 404, "No doctor found");
     }
 
-    const articles = await Article.find({ admin: adminId }).populate("admin");
+    const articles = await Article.find({
+      admin: adminId,
+      draft: false,
+    }).populate("admin");
     if (!articles || !articles.length > 0) {
-      return sendResponse(res, 404, "This admin has no consultations");
+      return sendResponse(res, 404, "This admin has no articles");
+    }
+    return sendResponse(res, 200, "", true, articles);
+  } catch (error) {
+    return sendResponse(res, 500, error.message);
+  }
+};
+export const getArticlesOfAdminDraft = async (req, res) => {
+  try {
+    const adminId = req.id;
+
+    if (!adminId) {
+      return sendResponse(res, 400, "Please provide the adminId");
+    }
+
+    const admin = await User.findById(adminId);
+
+    if (!admin) {
+      return sendResponse(res, 404, "No doctor found");
+    }
+
+    const articles = await Article.find({
+      admin: adminId,
+      draft: true,
+    }).populate("admin");
+    if (!articles || !articles.length > 0) {
+      return sendResponse(res, 404, "This admin has no draft articles");
     }
     return sendResponse(res, 200, "", true, articles);
   } catch (error) {
@@ -157,39 +186,54 @@ export const getAllArticles = async (req, res) => {
     const limit = parseInt(req.query.limit) || 3;
     const skip = (page - 1) * limit;
 
-    const { query = "", categories } = req.query; 
+    const { query = "", categories = "" } = req.query;
 
     let searchCondition = { $or: [] };
 
+    // Global search for `query` across multiple fields
     if (query.trim()) {
+      searchCondition.$or.push(
+        { title: { $regex: query, $options: "i" } },
+        { content: { $regex: query, $options: "i" } },
+        { author: { $regex: query, $options: "i" } }
+      );
+    }
+
+    // Search within `categories` array
+    if (categories.trim()) {
       const categorieSearch = await Article.find({
-        categories: { $regex: query, $options: "i" },
-      }).select("_id");
+        categories: { $regex: categories, $options: "i" },
+      }).select("categories");
 
-      const ArticalIds = categorieSearch.map((artical) => artical._id);
+      const uniqueCategories = [
+        ...new Set(
+          categorieSearch.flatMap((article) => article.categories)
+        ),
+      ];
 
-      if (ArticalIds.length > 0) {
-        searchCondition.$or.push({ categories: { $in: ArticalIds } });
+      if (uniqueCategories.length > 0) {
+        searchCondition.$or.push({ categories: { $in: uniqueCategories } });
       }
     }
 
-    console.log("search Query ", query);
+    if (searchCondition.$or.length === 0) {
+      searchCondition = {};
+    }
 
-    const totalDocs = await Article.countDocuments(
-      searchCondition.$or.length ? searchCondition : {}
-    );
+    console.log("Search Query:", query);
+    console.log("Categories Filter:", categories);
 
-    console.log("Total Doc totalDocs 2 - " + totalDocs);
+    const totalDocs = await Article.countDocuments(searchCondition);
 
-    const Articals = await Article.find(
-      searchCondition.$or.length ? searchCondition : {}
-    )
+    console.log("Total Documents:", totalDocs);
+
+    const Articles = await Article.find(searchCondition)
       .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
 
-     const totalPages = Math.ceil(totalDocs / limit);
+    const totalPages = Math.ceil(totalDocs / limit);
 
     return res.status(200).json({
       success: true,
@@ -199,7 +243,7 @@ export const getAllArticles = async (req, res) => {
         totalPages: totalPages,
         totalDocs: totalDocs,
         limit: limit,
-        Articals: Articals,
+        Articles: Articles,
         searchCondition: searchCondition,
       },
     });
@@ -210,6 +254,7 @@ export const getAllArticles = async (req, res) => {
     });
   }
 };
+
 
 export const deleteArticle = async (req, res) => {
   try {
@@ -240,7 +285,7 @@ export const deleteArticle = async (req, res) => {
       });
     }
 
-     await article.deleteOne();
+    await article.deleteOne();
 
     return sendResponse(
       res,
@@ -252,4 +297,3 @@ export const deleteArticle = async (req, res) => {
     return sendResponse(res, 500, error.message);
   }
 };
-

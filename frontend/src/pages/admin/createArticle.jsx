@@ -13,7 +13,8 @@ const CreateArticles = () => {
     tags: "",
     admin: user._id,
     file: null,
-    content: ""
+    content: "",
+    draft: false,
   });
 
   const handleChange = (e) => {
@@ -35,10 +36,13 @@ const CreateArticles = () => {
   };
 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, draft = false) => {
     e.preventDefault();
 
     try {
+      const updatedFormData = { ...formData, draft };
+      setFormData(updatedFormData);
+
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
         if (key === "file") {
@@ -139,12 +143,18 @@ const CreateArticles = () => {
         </div>
 
         {/* Submit Button */}
-        <div>
+        <div className="flex gap-10">
           <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onClick={(e) => handleSubmit(e, true)}
           >
-            Submit
+            Save to draft
+          </button>
+          <button
+            className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onClick={(e) => handleSubmit(e)}
+          >
+            Publish
           </button>
         </div>
       </form>

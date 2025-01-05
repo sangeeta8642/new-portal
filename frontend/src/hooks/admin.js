@@ -9,7 +9,12 @@ export const useArticlesOfAdmin = () => {
   const [articalesLimit, setarticalesLimit] = useState();
   const [articalesTotalDocs, setarticalesTotalDocs] = useState();
 
-  const FetcharticalesByPagination = async (page, limit, query = "") => {
+  const FetcharticalesByPagination = async (
+    page,
+    limit,
+    query = "",
+    categories = ""
+  ) => {
     // if (!page || !limit || isNaN(page) || isNaN(limit)) {
     //   alert("Invalid pagination parameters.");
     //   return;
@@ -23,12 +28,13 @@ export const useArticlesOfAdmin = () => {
             page,
             limit,
             query: query,
+            categories: categories,
           },
         }
       );
 
       if (response?.data?.success) {
-        setarticalesListData(response?.data?.data?.Articals);
+        setarticalesListData(response?.data?.data?.Articles);
         setarticalesCurrentPage(response?.data?.data?.currentPage);
         setarticalesTotalPages(response?.data?.data?.totalPages);
         setarticalesLimit(response?.data?.data?.limit);

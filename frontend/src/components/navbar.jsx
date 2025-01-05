@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { admin_links, no_user, user_links } from '.';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Togglebtn from './Toggledarkmode';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,13 +29,18 @@ const Navbar = () => {
             <h1 className='text-3xl text-white font-semibold'>
                 India Now
             </h1>
-            <button 
-                className='md:hidden text-white text-2xl' 
+            <button
+                className='md:hidden text-white text-2xl'
                 onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? '\u2715' : '\u2630'}
             </button>
-            <div 
+            <div
                 className={`flex flex-col md:flex-row gap-4 ${isMenuOpen ? 'absolute top-14 left-0 w-full bg-red-500 py-4' : 'hidden md:flex md:static'}`}>
+                <div>
+                    <Togglebtn />
+                </div>
+
+
                 {
                     !user ?
                         no_user.map((link) => (
@@ -46,6 +52,7 @@ const Navbar = () => {
                                     <a className='capitalize text-white font-semibold text-lg px-4' href={link.path} key={link.path}>{link.title}</a>
                                 ))}
                                 <button onClick={handleLogOut} className='capitalize text-white font-semibold text-lg px-4'>logout</button>
+
                             </> :
                             <>
                                 {admin_links.map((link) => (
@@ -54,6 +61,7 @@ const Navbar = () => {
                                 <button onClick={handleLogOut} className='capitalize text-white font-semibold text-lg px-4'>logout</button>
                             </>
                 }
+
             </div>
         </div>
     );
