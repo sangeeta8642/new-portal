@@ -15,6 +15,7 @@ import {
   getCommentOfStatus,
   deleteComment,
   getCommentsByArticle,
+  getPendingComments,
 } from "../controllers/comment.controller.js";
 
 const router = e.Router();
@@ -26,5 +27,6 @@ router.route("/status").put(isAuthenticate, updateCommentStatus);
 router.route("/by/status").post(isAuthenticate, getCommentOfStatus);
 router.route("/").delete(isAuthenticate, deleteComment);
 router.route("/by/article").post(isAuthenticate, getCommentsByArticle);
+router.route("/pending").post(isAuthenticate, getPendingComments);
 
 export default router;

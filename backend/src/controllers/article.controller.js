@@ -154,7 +154,7 @@ export const getArticle = async (req, res) => {
 export const getAllArticles = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 2;
+    const limit = parseInt(req.query.limit) || 3;
     const skip = (page - 1) * limit;
 
     const { query = "", categories } = req.query; // Default query to an empty string
@@ -217,7 +217,7 @@ export const getAllArticles = async (req, res) => {
 
 export const deleteArticle = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     // Validate input
     if (!id) {

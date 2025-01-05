@@ -174,3 +174,31 @@ export const getCommentsByArticle = async (req, res) => {
     return sendResponse(res, 500, error.message);
   }
 };
+export const getPendingComments = async (req, res) => {
+  try {
+    const { articleId } = req.body;
+
+    if (!articleId) {
+      return sendResponse(res, 400, "Please provide an article ID");
+    }
+
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return sendResponse(res, 404, "Article not found");
+    }
+
+    const comments = await Comment.find({ article: articleId, status: "p" })
+      .populate("user", "name email profilePic")
+      .sort({ createdAt: -1 });
+
+    return sendResponse(
+      res,
+      200,
+      "Comments fetched successfully",
+      true,
+      comments
+    );
+  } catch (error) {
+    return sendResponse(res, 500, error.message);
+  }
+};

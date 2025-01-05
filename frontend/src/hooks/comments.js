@@ -30,7 +30,7 @@ export const useGetAcceptedComments = (id) => {
   return { comments, setComments, loading, error };
 };
 
-export const useGetAllComments = (id) => {
+export const useGetAllComments = (articleId, status) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,8 +38,9 @@ export const useGetAllComments = (id) => {
   useEffect(() => {
     const fetchAcceptedComments = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/comment`,
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/comment/pending`,
+          { articleId, status },
           { withCredentials: true }
         );
         console.log("response", response.data.data);

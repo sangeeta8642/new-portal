@@ -1,15 +1,25 @@
-// import React from "react";
-// import { Navigate, Outlet } from "react-router-dom";
-// import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import { user } from "../utils";
+// import { useAuth } from "./hooks/useAuth"; // Custom hook to check authentication status
 
-// const ProtectedRoute = ({ allowedRole }) => {
-//   const LocalstorageToken = localStorage.getItem("token");
+// Protected Route for logged-in users
+export const ProtectedRoute = ({ children }) => {
+    // const { user } = useAuth(); // Assuming useAuth hook provides user info
 
-//   return LocalstorageToken.role === allowedRole ? (
-//     <Outlet />
-//   ) : (
-//     <Navigate to="/" replace />
-//   );
-// };
+    if (!user) {
+        return <Navigate to="/login" />;
+    }
 
-// export default ProtectedRoute;
+    return children;
+};
+
+// Protected Route for Admin users
+export const AdminRoute = ({ children }) => {
+    // const { user } = useAuth(); // Assuming useAuth hook provides user info
+
+    if (!user || user.role !== "admin") {
+        return <Navigate to="/articles" />;
+    }
+
+    return children;
+};

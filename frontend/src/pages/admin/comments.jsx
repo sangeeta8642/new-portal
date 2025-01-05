@@ -11,7 +11,21 @@ const Comments = () => {
   const location = useLocation();
   const article = location.state?.art;
   const [comment, setComment] = useState("");
-  const { comments, setComments } = useGetAllComments();
+  const { comments } = useGetAllComments(article._id,"p");
+
+  const handleStatusChange = async (commentId, status) => {
+    try {
+      let res = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/comment/status`, { commentId, status }, { withCredentials: true })
+      console.log("res", res);
+      if (res.data.success) {
+        alert(res.data.message)
+      }
+
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
 
   const handleSubmit = async () => {
     try {
@@ -22,8 +36,9 @@ const Comments = () => {
         { withCredentials: true }
       );
       if (res.data.success) {
-        setComments((prevComments) => [...prevComments, res.data.data]);
-        setComment("");
+        // setComments((prevComments) => [...prevComments, res.data.data]);
+        // setComment("");
+        alert(res.data.message)
       }
     } catch (error) {
       console.error(error);
@@ -94,12 +109,12 @@ const Comments = () => {
                 </div>
 
                 <div className="flex items-center justify-around">
-                  <button className="text-green-700 text-xl">
+                  <button className="text-green-700 text-xl" onClick={() => handleStatusChange(comment._id, "a")}>
                     <abbr title="Accept">
                       <FaCheck />
                     </abbr>
                   </button>
-                  <button className="text-red-700 text-xl">
+                  <button className="text-red-700 text-xl" onClick={() => handleStatusChange(comment._id, "r")}>
                     <abbr title="Reject">
                       <RxCross1 />
                     </abbr>

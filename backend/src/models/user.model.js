@@ -7,7 +7,12 @@ const userSchema = mongoose.Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], required: true },
-    favorites: [], //TODO:adding the schema for the fvrt articles
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Article",
+      },
+    ],
     profilePic: {
       type: String,
       required: true,

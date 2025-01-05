@@ -12,7 +12,7 @@ const Comments = () => {
     const location = useLocation();
     const article = location.state?.art;
     const [comment, setComment] = useState("");
-    const { comments, setComments } = useGetAcceptedComments();
+    const { comments } = useGetAcceptedComments(article._id);
 
     const handleSubmit = async () => {
         try {
@@ -23,8 +23,9 @@ const Comments = () => {
                 { withCredentials: true }
             );
             if (res.data.success) {
-                setComments((prevComments) => [...prevComments, res.data.data]);
-                setComment("");
+                // setComments((prevComments) => [...prevComments, res.data.data]);
+                // setComment("");
+                alert(res.data.message)
             }
         } catch (error) {
             console.error(error);

@@ -6,11 +6,28 @@ import { useNavigate } from 'react-router-dom';
 import { TbView360 } from "react-icons/tb";
 import { IoIosHeart } from "react-icons/io";
 import { FaComment } from 'react-icons/fa6';
+import axios from 'axios';
 
 const Articles = () => {
   const { articles } = useGetAllArticles()
   const nav = useNavigate()
 
+  const handleFavorites = async (articleId) => {
+    try {
+      let res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/favorites`,
+        { articleId }, { withCredentials: true })
+      console.log("res", res);
+      if (res.data.success) {
+        alert(res.data.message)
+        nav('/favorites')
+      }
+
+    } catch (error) {
+      // alert(error.response.data.message)
+      alert(error.response.data.message)
+
+    }
+  }
 
   return (
     <main className='w-full'>
@@ -24,8 +41,7 @@ const Articles = () => {
               <div className='flex flex-col gap-2'>
                 <ArticleCard article={art} />
                 <div className='w-full flex gap-2 justify-end px-4'>
-                  <button onClick={() => nav('/admin/update',
-                    { state: { art } })}>
+                  <button onClick={() => handleFavorites(art._id)}>
                     <abbr title="Add to favorites">
                       <IoIosHeart className='size-6' />
                     </abbr>

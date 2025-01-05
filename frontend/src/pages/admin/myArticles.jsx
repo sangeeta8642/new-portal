@@ -8,6 +8,7 @@ import { VscEdit } from "react-icons/vsc";
 import { IoChevronBack, IoChevronForwardOutline } from "react-icons/io5";
 import { TbView360 } from "react-icons/tb";
 import { FaComment, FaTrash } from "react-icons/fa6";
+import axios from "axios";
 
 
 const MyArticles = () => {
@@ -21,6 +22,20 @@ const MyArticles = () => {
         handlePageChange,
         FetcharticalesByPagination,
     } = useArticlesOfAdmin();
+
+    const handleDelete = async (id) => {
+        try {
+            let res = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/article/${id}`, { withCredentials: true })
+            console.log("res", res);
+            if (res.data.success) {
+                alert(res.data.message)
+            }
+
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
 
     useEffect(() => {
         FetcharticalesByPagination(1, 10, "");
@@ -61,11 +76,11 @@ const MyArticles = () => {
                                         <TbView360 className='size-6' />
                                     </abbr>
                                 </button>
-                                <button onClick={() => nav('/article/comments',
+                                <button onClick={() => nav('/admin/comments',
                                     { state: { art } })}><abbr title="see comments">
                                         <FaComment className='size-6' />
                                     </abbr></button>
-                                <button><abbr title="see comments">
+                                <button onClick={() => handleDelete(art._id)}><abbr title="Delete">
                                     <FaTrash className='size-6' />
                                 </abbr> </button>
                             </div>

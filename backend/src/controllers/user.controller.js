@@ -1,8 +1,10 @@
 import { sendResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
+import { Article } from "../models/articles.model.js";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/datauri.js";
 import jwt from "jsonwebtoken";
+// import ArticleCard from "../../../frontend/src/components/articlecard.jsx";
 
 export const registerUser = async (req, res) => {
   try {
@@ -100,3 +102,110 @@ export const getUser = async (req, res) => {
     return sendResponse(res, 500, error.message);
   }
 };
+
+export const addToFavorites = async (req, res) => {
+  const { articleId } = req.body;
+  const userId = req.id; // Assuming the user ID is available from authentication
+
+  try {
+    // Check if the article exists
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if article is already in favorites
+    if (user.favorites.includes(articleId)) {
+      return res
+        .status(400)
+        .json({ message: "Article is already in favorites" });
+    }
+
+    // Add articleId to favorites array
+    user.favorites.push(articleId);
+
+    // Save updated user
+    await user.save();
+
+    // return res.status(200).json({ message: "Article added to favorites", favorites: user.favorites });
+    return sendResponse(
+      res,
+      200,
+      "Article added to favorites",
+      true,
+      user.favorites
+    );
+  } catch (error) {
+    console.error(error);
+    // return res.status(500).json({ message: "Server error" });
+    return sendResponse(res, 500, error.message);
+  }
+};
+
+export const getFavorites = async (req, res) => {
+  const userId = req.id; // Assuming the user ID is available from authentication
+
+  try {
+    // Find the user
+    const user = await User.findById(userId).populate("favorites");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return user's favorite articles
+    return sendResponse(
+      res,
+      200,
+      "Favorites retrieved successfully",
+      true,
+      user.favorites
+    );
+  } catch (error) {
+    console.error(error);
+    return sendResponse(res, 500, error.message);
+  }
+};
+
+// Remove article from favorites
+export const removeFromFavorites = async (req, res) => {
+  const { articleId } = req.body; // Article ID to remove from favorites
+  const userId = req.id; // Assuming the user ID is available from authentication
+
+  try {
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if article is in favorites
+    if (!user.favorites.includes(articleId)) {
+      return res.status(400).json({ message: "Article is not in favorites" });
+    }
+
+    // Remove articleId from favorites array
+    user.favorites = user.favorites.filter(fav => fav.toString() !== articleId);
+
+    // Save updated user
+    await user.save();
+
+    // Return updated favorites list
+    return sendResponse(
+      res,
+      200,
+      "Article removed from favorites",
+      true,
+      user.favorites
+    );
+  } catch (error) {
+    console.error(error);
+    return sendResponse(res, 500, error.message);
+  }
+};
+

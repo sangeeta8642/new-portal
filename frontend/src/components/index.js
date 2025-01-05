@@ -1,6 +1,6 @@
 export const user_links = [
   { title: "articles", path: "/articles" },
-  { title: "favorites", path: "/articles/favorites" },
+  { title: "favorites", path: "/favorites" },
   { title: "profile", path: "/profile" },
   // { title: "logout", path: "/logout" },
 ];

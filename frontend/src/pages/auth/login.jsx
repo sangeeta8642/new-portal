@@ -44,7 +44,7 @@ const Login = () => {
         alert(res.data.message)
         localStorage.setItem("auth", JSON.stringify(res.data.data))
         if (res.data.data.role === "admin") {
-          nav("/admin/create/")
+          nav("/admin/article")
 
         } else {
           nav('/articles')

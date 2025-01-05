@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export const useArticlesOfAdmin = () => {
-
   const [articalesListData, setarticalesListData] = useState([]);
   const [articalesLoading, setarticalesLoading] = useState(false);
   const [articalesCurrentPage, setarticalesCurrentPage] = useState(1);
@@ -67,4 +66,32 @@ export const useArticlesOfAdmin = () => {
     handlePageChange,
     FetcharticalesByPagination,
   };
+};
+
+export const useGetFavories = () => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/user/favorites`,
+          { withCredentials: true }
+        );
+        console.log("response", response.data.data);
+
+        setArticles(response.data.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    fetchFavorites();
+  }, []);
+
+  return { articles, loading, error };
 };
